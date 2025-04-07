@@ -1,16 +1,16 @@
 # syntax=docker/dockerfile:1
 # Initialize device type args
 # use build args in the docker build command with --build-arg="BUILDARG=true"
-ARG USE_CUDA=false
-ARG USE_OLLAMA=false
+ARG USE_CUDA=true
+ARG USE_OLLAMA=true
 # Tested with cu117 for CUDA 11 and cu121 for CUDA 12 (default)
 ARG USE_CUDA_VER=cu121
 # any sentence transformer model; models to use can be found at https://huggingface.co/models?library=sentence-transformers
 # Leaderboard: https://huggingface.co/spaces/mteb/leaderboard 
 # for better performance and multilangauge support use "intfloat/multilingual-e5-large" (~2.5GB) or "intfloat/multilingual-e5-base" (~1.5GB)
 # IMPORTANT: If you change the embedding model (sentence-transformers/all-MiniLM-L6-v2) and vice versa, you aren't able to use RAG Chat with your previous documents loaded in the WebUI! You need to re-embed them.
-ARG USE_EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
-ARG USE_RERANKING_MODEL=""
+ARG USE_EMBEDDING_MODEL=jinaai/jina-embeddings-v3
+ARG USE_RERANKING_MODEL=jinaai/jina-reranker-v2-base-multilingual
 
 # Tiktoken encoding name; models to use can be found at https://huggingface.co/models?library=tiktoken
 ARG USE_TIKTOKEN_ENCODING_NAME="cl100k_base"
@@ -53,11 +53,13 @@ ENV ENV=prod \
     USE_CUDA_DOCKER=${USE_CUDA} \
     USE_CUDA_DOCKER_VER=${USE_CUDA_VER} \
     USE_EMBEDDING_MODEL_DOCKER=${USE_EMBEDDING_MODEL} \
-    USE_RERANKING_MODEL_DOCKER=${USE_RERANKING_MODEL}
+    USE_RERANKING_MODEL_DOCKER=${USE_RERANKING_MODEL} \
+    ENABLE_OTEL=false
 
 ## Basis URL Config ##
 ENV OLLAMA_BASE_URL="/ollama" \
-    OPENAI_API_BASE_URL=""
+    OPENAI_API_BASE_URL="" \
+    OLLAMA_CONTEXT_LENGTH=10000
 
 ## API Key and Security Config ##
 ENV OPENAI_API_KEY="" \
@@ -68,7 +70,7 @@ ENV OPENAI_API_KEY="" \
 
 #### Other models #########################################################
 ## whisper TTS model settings ##
-ENV WHISPER_MODEL="base" \
+ENV WHISPER_MODEL="turbo" \
     WHISPER_MODEL_DIR="/app/backend/data/cache/whisper/models"
 
 ## RAG Embedding model settings ##
