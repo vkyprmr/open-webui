@@ -226,3 +226,8 @@ If you have any questions, suggestions, or need assistance, please open an issue
 ---
 
 Created by [Timothy Jaeryang Baek](https://github.com/tjbck) - Let's make Open WebUI even more amazing together! 💪
+
+#### Note:
+```
+docker run -d -p 8598:8080 --gpus=all -v /mnt/data/ollama:/root/.ollama -v open-webui:/app/backend/data --name open-webui --restart always szmfdu/open-webui
+```
